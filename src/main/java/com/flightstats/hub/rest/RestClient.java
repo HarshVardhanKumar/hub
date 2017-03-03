@@ -4,7 +4,11 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.GZIPContentEncodingFilter;
+import com.sun.jersey.client.apache4.ApacheHttpClient4Handler;
 import com.sun.jersey.client.urlconnection.HTTPSProperties;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,12 +63,16 @@ public class RestClient {
             };
             SSLContext ctx = SSLContext.getInstance("SSL");
             ctx.init(null, certs, new SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(ctx.getSocketFactory());
+//            HttpsURLConnection.setDefaultSSLSocketFactory(ctx.getSocketFactory());
 
-            ClientConfig config = new DefaultClientConfig();
-            config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES,
-                    new HTTPSProperties((hostname, session) -> true, ctx));
-            Client client = Client.create(config);
+//            ClientConfig config = new DefaultClientConfig();
+//            config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES,
+//                    new HTTPSProperties((hostname, session) -> true, ctx));
+
+            HttpClient apacheClient = HttpClientBuilder.create().setSSLContext(ctx).build();
+            Client client = new Client(new ApacheHttpClient4Handler(apacheClient, new BasicCookieStore(), true));
+
+//            Client client = Client.create(config);
             client.setConnectTimeout((int) TimeUnit.SECONDS.toMillis(connectTimeout));
             client.setReadTimeout((int) TimeUnit.SECONDS.toMillis(readTimeout));
             client.setFollowRedirects(followRedirects);
