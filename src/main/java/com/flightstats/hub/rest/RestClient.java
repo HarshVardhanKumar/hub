@@ -7,6 +7,9 @@ import com.sun.jersey.api.client.filter.GZIPContentEncodingFilter;
 import com.sun.jersey.client.apache4.ApacheHttpClient4Handler;
 import com.sun.jersey.client.urlconnection.HTTPSProperties;
 import org.apache.http.client.HttpClient;
+import org.apache.http.conn.socket.LayeredConnectionSocketFactory;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
@@ -15,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
@@ -61,18 +65,15 @@ public class RestClient {
                         }
                     }
             };
+
             SSLContext ctx = SSLContext.getInstance("SSL");
             ctx.init(null, certs, new SecureRandom());
-//            HttpsURLConnection.setDefaultSSLSocketFactory(ctx.getSocketFactory());
 
-//            ClientConfig config = new DefaultClientConfig();
-//            config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES,
-//                    new HTTPSProperties((hostname, session) -> true, ctx));
+            HttpClient apacheClient = HttpClientBuilder.create()
+                    .setSSLSocketFactory(new SSLConnectionSocketFactory(ctx, NoopHostnameVerifier.INSTANCE))
+                    .build();
 
-            HttpClient apacheClient = HttpClientBuilder.create().setSSLContext(ctx).build();
             Client client = new Client(new ApacheHttpClient4Handler(apacheClient, new BasicCookieStore(), true));
-
-//            Client client = Client.create(config);
             client.setConnectTimeout((int) TimeUnit.SECONDS.toMillis(connectTimeout));
             client.setReadTimeout((int) TimeUnit.SECONDS.toMillis(readTimeout));
             client.setFollowRedirects(followRedirects);
