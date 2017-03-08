@@ -6,6 +6,7 @@ import com.flightstats.hub.cluster.WatchManager;
 import com.flightstats.hub.dao.*;
 import com.flightstats.hub.dao.aws.*;
 import com.flightstats.hub.model.ChannelConfig;
+import com.flightstats.hub.spoke.EfsContentDao;
 import com.flightstats.hub.spoke.RemoteSpokeStore;
 import com.flightstats.hub.spoke.SpokeContentDao;
 import com.flightstats.hub.spoke.SpokeTtlEnforcer;
@@ -33,10 +34,16 @@ class ClusterHubBindings extends AbstractModule {
         bind(S3Config.class).asEagerSingleton();
         bind(ContentService.class)
                 .to(ClusterContentService.class).asEagerSingleton();
-        bind(RemoteSpokeStore.class).asEagerSingleton();
-        bind(ContentDao.class)
-                .annotatedWith(Names.named(ContentDao.CACHE))
-                .to(SpokeContentDao.class).asEagerSingleton();
+        if (HubProperties.getProperty("spoke.cluster", true)) {
+            bind(RemoteSpokeStore.class).asEagerSingleton();
+            bind(ContentDao.class)
+                    .annotatedWith(Names.named(ContentDao.CACHE))
+                    .to(SpokeContentDao.class).asEagerSingleton();
+        } else {
+            bind(ContentDao.class)
+                    .annotatedWith(Names.named(ContentDao.CACHE))
+                    .to(EfsContentDao.class).asEagerSingleton();
+        }
         bind(ContentDao.class)
                 .annotatedWith(Names.named(ContentDao.SINGLE_LONG_TERM))
                 .to(S3SingleContentDao.class).asEagerSingleton();
