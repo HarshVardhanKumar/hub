@@ -1,9 +1,11 @@
 package com.flightstats.hub.spoke;
 
+import com.flightstats.hub.app.HubProperties;
 import com.flightstats.hub.dao.ContentDao;
 import com.flightstats.hub.dao.file.SingleContentService;
 import com.flightstats.hub.metrics.Traces;
 import com.flightstats.hub.model.*;
+import com.flightstats.hub.util.TimeUtil;
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
 
@@ -39,6 +41,7 @@ public class EfsContentDao implements ContentDao {
                 .channelName(channel)
                 .next(false)
                 .startKey(limitKey)
+                .earliestTime(TimeUtil.now().minusMinutes(HubProperties.getSpokeTtl()))
                 .epoch(Epoch.IMMUTABLE)
                 .count(1)
                 .build();
