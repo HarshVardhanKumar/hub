@@ -6,10 +6,7 @@ import com.flightstats.hub.cluster.WatchManager;
 import com.flightstats.hub.dao.*;
 import com.flightstats.hub.dao.aws.*;
 import com.flightstats.hub.model.ChannelConfig;
-import com.flightstats.hub.spoke.EfsContentDao;
-import com.flightstats.hub.spoke.RemoteSpokeStore;
-import com.flightstats.hub.spoke.SpokeContentDao;
-import com.flightstats.hub.spoke.SpokeTtlEnforcer;
+import com.flightstats.hub.spoke.*;
 import com.flightstats.hub.webhook.Webhook;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
@@ -58,6 +55,7 @@ class ClusterHubBindings extends AbstractModule {
         bind(S3Verifier.class).asEagerSingleton();
         bind(AppUrlCheck.class).asEagerSingleton();
         bind(SpokeTtlEnforcer.class).asEagerSingleton();
+        bind(FinalCheck.class).to(SpokeFinalCheck.class).asEagerSingleton();
     }
 
     @Inject

@@ -15,7 +15,6 @@ import com.flightstats.hub.rest.*;
 import com.flightstats.hub.spoke.FileSpokeStore;
 import com.flightstats.hub.spoke.GCRunner;
 import com.flightstats.hub.spoke.SpokeClusterRegister;
-import com.flightstats.hub.spoke.SpokeFinalCheck;
 import com.flightstats.hub.time.NtpMonitor;
 import com.flightstats.hub.time.TimeService;
 import com.flightstats.hub.util.HubUtils;
@@ -154,7 +153,6 @@ public class HubBindings extends AbstractModule {
         bind(ShutdownManager.class).asEagerSingleton();
         bind(FileSpokeStore.class).asEagerSingleton();
         bind(SpokeClusterRegister.class).asEagerSingleton();
-        bind(FinalCheck.class).to(SpokeFinalCheck.class).asEagerSingleton();
         bind(InFlightService.class).asEagerSingleton();
     }
 

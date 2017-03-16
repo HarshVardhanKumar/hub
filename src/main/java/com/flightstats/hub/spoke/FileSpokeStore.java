@@ -6,6 +6,7 @@ import com.flightstats.hub.model.MinutePath;
 import com.flightstats.hub.util.TimeUtil;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.io.ByteStreams;
+import com.google.inject.Singleton;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +22,7 @@ import java.util.Collection;
 /**
  * Direct interactions with the file system
  */
+@Singleton
 public class FileSpokeStore {
 
     private final static Logger logger = LoggerFactory.getLogger(FileSpokeStore.class);
@@ -54,7 +56,7 @@ public class FileSpokeStore {
             boolean setExecutable = file.setExecutable(true);
             logger.trace("copied {} {} {}", file, copy, setExecutable);
             return true;
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.info("unable to write to " + path, e);
             return false;
         }
