@@ -1,6 +1,7 @@
 package com.flightstats.hub.spoke;
 
 import com.flightstats.hub.app.HubProperties;
+import com.flightstats.hub.dao.ChannelService;
 import com.flightstats.hub.dao.ContentDao;
 import com.flightstats.hub.dao.file.SingleContentService;
 import com.flightstats.hub.metrics.Traces;
@@ -19,6 +20,8 @@ public class EfsContentDao implements ContentDao {
 
     @Inject
     private SingleContentService contentService;
+    @Inject
+    private ChannelService channelService;
 
     @Override
     public ContentKey insert(String channelName, Content content) throws Exception {
@@ -39,6 +42,7 @@ public class EfsContentDao implements ContentDao {
     public Optional<ContentKey> getLatest(String channel, ContentKey limitKey, Traces traces) {
         DirectionQuery query = DirectionQuery.builder()
                 .channelName(channel)
+                .channelConfig(channelService.getCachedChannelConfig(channel))
                 .next(false)
                 .startKey(limitKey)
                 .earliestTime(TimeUtil.now().minusMinutes(HubProperties.getSpokeTtl()))

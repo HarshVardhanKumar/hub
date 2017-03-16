@@ -55,6 +55,7 @@ class ClusterHubBindings extends AbstractModule {
         bind(S3Verifier.class).asEagerSingleton();
         bind(AppUrlCheck.class).asEagerSingleton();
         bind(SpokeTtlEnforcer.class).asEagerSingleton();
+        //todo - gfm - this should be different for non-clustered hub
         bind(FinalCheck.class).to(SpokeFinalCheck.class).asEagerSingleton();
     }
 
