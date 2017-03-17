@@ -27,12 +27,13 @@ public class FileSpokeStore {
 
     private final static Logger logger = LoggerFactory.getLogger(FileSpokeStore.class);
     private final String storagePath;
+    private final boolean sync;
 
-    public FileSpokeStore() {
+    FileSpokeStore() {
         this(HubProperties.getSpokePath());
     }
 
-    public FileSpokeStore(String storagePath) {
+    private FileSpokeStore(String storagePath) {
         this.storagePath = StringUtils.appendIfMissing(storagePath, "/");
         logger.info("starting with storage path " + this.storagePath);
         if (!insert("hub-startup/" + new ContentKey().toUrl(), ("" + System.currentTimeMillis()).getBytes())) {
@@ -42,6 +43,7 @@ public class FileSpokeStore {
         if (file.canExecute()) {
             logger.warn("**** Spoke file permissions may allow incomplete reads ****");
         }
+        sync = HubProperties.getProperty("spoke.sync", false);
     }
 
     public boolean insert(String path, byte[] payload) {
@@ -54,7 +56,11 @@ public class FileSpokeStore {
         try (FileOutputStream output = new FileOutputStream(file)) {
             long copy = ByteStreams.copy(input, output);
             boolean setExecutable = file.setExecutable(true);
-            logger.trace("copied {} {} {}", file, copy, setExecutable);
+            if (sync) {
+                output.flush();
+                output.getFD().sync();
+            }
+            logger.trace("wrote {} {} {}", file, copy, setExecutable);
             return true;
         } catch (Exception e) {
             logger.info("unable to write to " + path, e);

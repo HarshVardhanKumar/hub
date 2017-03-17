@@ -126,7 +126,7 @@ public class ChannelResource {
                 .build();
         try {
             ContentKey contentKey = channelService.insert(channelName, content);
-            logger.trace("posted {}", contentKey);
+            logger.debug("posted {} {}", channelName, contentKey);
             InsertedContentKey insertionResult = new InsertedContentKey(contentKey);
             URI payloadUri = LinkBuilder.buildItemUri(contentKey, uriInfo.getAbsolutePath());
             Linked<InsertedContentKey> linkedResult = linked(insertionResult)
