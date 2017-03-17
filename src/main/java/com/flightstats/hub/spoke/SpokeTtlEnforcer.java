@@ -73,7 +73,8 @@ public class SpokeTtlEnforcer {
         @Override
         protected void startUp() throws Exception {
             logger.info("performing Spoke cleanup");
-            Commander.run(new String[]{"find", storagePath, "-mmin", "+" + ttlMinutes, "-delete"}, 10 * 60);
+            //todo - gfm - ???
+            //Commander.run(new String[]{"find", storagePath, "-mmin", "+" + ttlMinutes, "-delete"}, 10 * 60);
             logger.info("completed Spoke cleanup");
         }
 
