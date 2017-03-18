@@ -60,7 +60,7 @@ public class FileSpokeStore {
                 output.flush();
                 output.getFD().sync();
             }
-            logger.trace("wrote {} {} {}", file, copy, setExecutable);
+            logger.debug("wrote {} {} {}", file, copy, setExecutable);
             return true;
         } catch (Exception e) {
             logger.info("unable to write to " + path, e);
