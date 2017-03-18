@@ -76,7 +76,7 @@ public class WebhookManager {
                 activeLeader.exit(false);
                 start(webhook);
             } else {
-                logger.debug("webhook not changed {}", webhook);
+                logger.trace("webhook not changed {}", webhook);
             }
         }
         stop(webhooksToStop, true);
