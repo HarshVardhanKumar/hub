@@ -40,11 +40,11 @@ public class SpokeTtlEnforcer {
             if (channel.isLive()) {
                 DateTime ttlDateTime = TimeUtil.stable().minusMinutes(ttlMinutes + 1);
                 for (int i = 0; i < 3; i++) {
-                    Commander.run(new String[]{"rm", "-rf", channelPath + "/" + TimeUtil.minutes(ttlDateTime.minusMinutes(i))}, 1);
+                    Commander.run(new String[]{"rm", "-rf", channelPath + "/" + TimeUtil.minutes(ttlDateTime.minusMinutes(i))}, 5);
                     Commander.run(new String[]{"rm", "-rf", channelPath + "/" + TimeUtil.hours(ttlDateTime.minusHours(i + 1))}, 5);
                 }
             } else {
-                Commander.run(new String[]{"find", channelPath, "-mmin", "+" + ttlMinutes, "-delete"}, 1);
+                Commander.run(new String[]{"find", channelPath, "-mmin", "+" + ttlMinutes, "-delete"}, 10);
             }
         };
     }
