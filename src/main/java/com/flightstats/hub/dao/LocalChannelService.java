@@ -397,7 +397,8 @@ public class LocalChannelService implements ChannelService {
             ContentPath contentPath = lastContentPath.get(channelName, defaultValue, REPLICATED_LAST_UPDATED);
             //REPLICATED_LAST_UPDATED is inclusive, and we want to be exclusive.
             if (!contentPath.equals(defaultValue)) {
-                contentPath = new SecondPath(contentPath.getTime().plusSeconds(1));
+                //todo - gfm - ???
+                contentPath = new SecondPath(contentPath.getTime());
             }
             return contentPath;
         }
